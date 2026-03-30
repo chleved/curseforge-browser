@@ -1,0 +1,7 @@
+settings.json
+notes.md
+mods*.json
+resource*.json
+.env*
+.vscode/
+__pycache__/
