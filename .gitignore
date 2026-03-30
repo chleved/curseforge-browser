@@ -5,3 +5,7 @@ resource*.json
 .env*
 .vscode/
 __pycache__/
+venv/
+dist/
+build/
+.release-linux-secret.txt

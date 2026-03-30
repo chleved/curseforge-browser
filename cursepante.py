@@ -794,7 +794,20 @@ class CurseForgeModBrowser(RefreshMixin, SortingMixin):
             return
         mod_data = self.mods_data.get(selection[0])
         if mod_data and mod_data.get("url"):
-            webbrowser.open(mod_data["url"])
+            original_ld = os.environ.get("LD_LIBRARY_PATH")
+            
+            if "LD_LIBRARY_PATH_ORIG" in os.environ:
+                os.environ["LD_LIBRARY_PATH"] = os.environ["LD_LIBRARY_PATH_ORIG"]
+            elif "LD_LIBRARY_PATH" in os.environ:
+                del os.environ["LD_LIBRARY_PATH"]
+
+            try:
+                webbrowser.open(mod_data["url"])
+            finally:
+                if original_ld is not None:
+                    os.environ["LD_LIBRARY_PATH"] = original_ld
+                elif "LD_LIBRARY_PATH" in os.environ:
+                    del os.environ["LD_LIBRARY_PATH"]
 
 
 def main():
