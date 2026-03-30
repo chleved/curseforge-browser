@@ -23,4 +23,5 @@ This program solves that problem.
 2. Download the appropriate version for your system:
    * `.exe` for Windows
    * Linux binary for Linux
-3. Run the downloaded file
+3. Put it in a separate folder (it will create some files)
+4. Run the downloaded file
