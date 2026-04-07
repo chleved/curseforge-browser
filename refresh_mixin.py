@@ -1,13 +1,8 @@
 import queue
 from tkinter import messagebox
 
+from constants import DEFAULT_CLASS_ID, MODS_MODE, PROGRESSIVE_DATE_CHUNK_SIZE, RESOURCEPACKS_MODE
 from curseforge_client import RequestCancelledError
-
-
-DEFAULT_CLASS_ID = 6
-MODS_MODE = "mods"
-RESOURCEPACKS_MODE = "resourcepacks"
-PROGRESSIVE_DATE_CHUNK_SIZE = 200
 
 
 class RefreshMixin:

@@ -1,0 +1,86 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Windows Release (PyInstaller)",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "-m",
+        "PyInstaller",
+        "--clean",
+        "--noconfirm",
+        "--onefile",
+        "--name",
+        "cursepante-windows",
+        "--hidden-import=PIL._tkinter_finder",
+        "--add-binary",
+        "C:/Users/Tail/.pyenv/pyenv-win/versions/3.12.10/DLLs/tcl86t.dll;.",
+        "--add-binary",
+        "C:/Users/Tail/.pyenv/pyenv-win/versions/3.12.10/DLLs/tk86t.dll;.",
+        "--add-data",
+        "C:/Users/Tail/.pyenv/pyenv-win/versions/3.12.10/tcl;tcl",
+        "--distpath",
+        "dist",
+        "--workpath",
+        "build/pywin",
+        "cursepante.py"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build AppImage (WSL)",
+      "type": "shell",
+      "command": "wsl",
+      "args": [
+        "bash",
+        "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && bash scripts/build_appimage.sh"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Flatpak (WSL)",
+      "type": "shell",
+      "command": "wsl",
+      "args": [
+        "bash",
+        "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && bash scripts/build_flatpak.sh"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build All Executables",
+      "dependsOn": [
+        "Build Windows Release (PyInstaller)",
+        "Build AppImage (WSL)",
+        "Build Flatpak (WSL)"
+      ],
+      "dependsOrder": "parallel",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

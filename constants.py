@@ -1,0 +1,36 @@
+APP_FONT_FAMILY = "Segoe UI"
+
+GAME_ID = 432
+DEFAULT_CLASS_ID = 6
+MODS_MODE = "mods"
+RESOURCEPACKS_MODE = "resourcepacks"
+DEFAULT_GAME_VERSION = "1.7.10"
+
+BASE_WINDOW_WIDTH = 1100
+BASE_WINDOW_HEIGHT = 700
+BASE_ENTRY_FONT_SIZE = 10
+BASE_HEADING_FONT_SIZE = 11
+BASE_ROW_HEIGHT = 44
+BASE_ICON_SIZE = 34
+
+MIN_ROWS_PER_PAGE = 5
+MAX_ROWS_PER_PAGE = 100
+IMAGE_SIZE = (BASE_ICON_SIZE, BASE_ICON_SIZE)
+
+MOD_LOADER_LABELS = {
+    0: "Any",
+    1: "Forge",
+    2: "Cauldron",
+    3: "LiteLoader",
+    4: "Fabric",
+    5: "Quilt",
+    6: "NeoForge",
+}
+
+CURSEFORGE_USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/91.0.4472.124 Safari/537.36"
+)
+
+PROGRESSIVE_DATE_CHUNK_SIZE = 200

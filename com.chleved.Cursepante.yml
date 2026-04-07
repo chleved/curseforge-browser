@@ -1,0 +1,21 @@
+app-id: com.chleved.Cursepante
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+command: cursepante
+finish-args:
+  - --share=network
+  - --socket=x11
+  - --socket=wayland
+  - --filesystem=home
+modules:
+  - name: cursepante
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 dist/linux-flatpak/cursepante /app/bin/cursepante
+      - tr -d '\r' < packaging/linux/com.chleved.Cursepante.desktop > com.chleved.Cursepante.desktop
+      - install -Dm644 com.chleved.Cursepante.desktop /app/share/applications/com.chleved.Cursepante.desktop
+      - install -Dm644 packaging/linux/com.chleved.Cursepante.svg /app/share/icons/hicolor/scalable/apps/com.chleved.Cursepante.svg
+    sources:
+      - type: dir
+        path: .

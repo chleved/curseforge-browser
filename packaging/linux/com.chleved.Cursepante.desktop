@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Cursepante
+Comment=CurseForge version-bound browser
+Exec=cursepante
+Icon=com.chleved.Cursepante
+Terminal=true
+Categories=Utility;
+StartupNotify=true

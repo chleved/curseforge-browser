@@ -1,7 +1,8 @@
 import time
-from datetime import datetime
 
 import requests
+
+from curseforge_parsing import build_mod_dict, find_resource_pack_class, parse_file_date
 
 
 JSON_MIME_TYPE = "application/json"
@@ -48,7 +49,7 @@ class CurseForgeClient:
             raise RuntimeError(f"Failed to fetch categories: {response.status_code}\n{response.text}")
 
         classes = response.json().get("data", []) or []
-        found_class = self._find_resource_pack_class(classes)
+        found_class = find_resource_pack_class(classes)
         if not found_class:
             return None, None
 
@@ -146,7 +147,7 @@ class CurseForgeClient:
             page_results = []
 
             for mod in payload.get("data", []):
-                mod_dict = self._build_mod_dict(mod, target_version, target_mod_loader)
+                mod_dict = build_mod_dict(mod, target_version, target_mod_loader)
                 if mod_dict["fileId"]:
                     page_results.append(mod_dict)
 
@@ -207,7 +208,7 @@ class CurseForgeClient:
             for file_data in response.json().get("data", []):
                 file_id = file_data.get("id")
                 if file_id in file_id_map:
-                    file_id_map[file_id]["update_date"] = self._parse_file_date(file_data.get("fileDate", ""))
+                    file_id_map[file_id]["update_date"] = parse_file_date(file_data.get("fileDate", ""))
 
             current_batch = (offset // batch_size) + 1
             self._set_status(status_callback, f"Loading file metadata: batch {current_batch}/{total_batches}")
@@ -216,94 +217,6 @@ class CurseForgeClient:
                 progress_callback(processed, len(file_ids))
             self._sleep_with_cancel(FETCH_DELAY_SECONDS, should_cancel)
             self._raise_if_cancelled(should_cancel)
-
-    def _build_mod_dict(self, mod, target_version, target_mod_loader=None):
-        indexes = [file_index for file_index in mod.get("latestFilesIndexes", []) if file_index]
-        normalized_loader = self._normalize_mod_loader_type(target_mod_loader)
-
-        def _matches(file_index, require_version=False, require_loader=False):
-            if require_version and file_index.get("gameVersion") != target_version:
-                return False
-            if require_loader:
-                if self._normalize_mod_loader_type(file_index.get("modLoader")) != normalized_loader:
-                    return False
-            return True
-
-        file_id = next(
-            (
-                file_index.get("fileId")
-                for file_index in indexes
-                if _matches(
-                    file_index,
-                    require_version=bool(target_version),
-                    require_loader=normalized_loader is not None,
-                )
-            ),
-            None,
-        )
-
-        if file_id is None and target_version:
-            file_id = next(
-                (file_index.get("fileId") for file_index in indexes if _matches(file_index, require_version=True)),
-                None,
-            )
-
-        if file_id is None and normalized_loader is not None:
-            file_id = next(
-                (file_index.get("fileId") for file_index in indexes if _matches(file_index, require_loader=True)),
-                None,
-            )
-
-        if file_id is None:
-            file_id = next((file_index.get("fileId") for file_index in indexes), None)
-
-        return {
-            "id": mod.get("id"),
-            "name": mod.get("name"),
-            "summary": mod.get("summary", ""),
-            "authors": ", ".join(author.get("name", "") for author in mod.get("authors", [])),
-            "downloads": mod.get("downloadCount", 0),
-            "url": (mod.get("links") or {}).get("websiteUrl"),
-            "logo_url": (mod.get("logo") or {}).get("thumbnailUrl"),
-            "fileId": file_id,
-        }
-
-    def _find_resource_pack_class(self, classes):
-        preferred_slugs = (
-            "texture-packs",
-            "texture_packs",
-            "resource-packs",
-            "resource_packs",
-            "texturepacks",
-        )
-
-        for item in classes:
-            slug = (item.get("slug") or "").lower()
-            if slug in preferred_slugs:
-                return item
-
-        for item in classes:
-            slug = (item.get("slug") or "").lower()
-            name = (item.get("name") or "").lower()
-            if "texture" in slug or "texture" in name or "resource" in slug or "resource" in name:
-                return item
-
-        return None
-
-    def _normalize_mod_loader_type(self, value):
-        try:
-            normalized = int(value)
-        except (TypeError, ValueError):
-            return None
-        return normalized if normalized > 0 else None
-
-    def _parse_file_date(self, raw_value):
-        if not raw_value:
-            return None
-        try:
-            return datetime.fromisoformat(raw_value.replace("Z", "+00:00")).replace(tzinfo=None)
-        except ValueError:
-            return None
 
     def _set_status(self, status_callback, message):
         if status_callback:

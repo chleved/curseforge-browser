@@ -3,9 +3,15 @@ notes.md
 mods*.json
 resource*.json
 .env*
-.vscode/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/settings.json
 __pycache__/
 venv/
 dist/
 build/
+build-dir/
 .release-linux-secret.txt
+.flatpak-builder/
+AppDir/
+repo/
