@@ -69,6 +69,23 @@
       "problemMatcher": []
     },
     {
+      "label": "Tag and Push Release Version",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "$version = '${input:releaseVersion}'; if ([string]::IsNullOrWhiteSpace($version)) { throw 'Release version cannot be empty.' }; $tag = if ($version.StartsWith('v')) { $version } else { \"v$version\" }; git show-ref --tags --verify --quiet \"refs/tags/$tag\"; if ($LASTEXITCODE -eq 0) { throw \"Tag $tag already exists locally. Use a new version or delete the existing tag.\" }; git tag -a $tag -m \"Release $tag\"; git push origin main; git push origin $tag"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Build All Executables",
       "dependsOn": [
         "Build Windows Release (PyInstaller)",
@@ -81,6 +98,14 @@
         "isDefault": true
       },
       "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "releaseVersion",
+      "type": "promptString",
+      "description": "Release version (for example: 1.0.1 or v1.0.1)",
+      "default": "1.0.1"
     }
   ]
 }
