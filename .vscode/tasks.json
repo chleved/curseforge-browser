@@ -75,7 +75,7 @@
       "args": [
         "-NoProfile",
         "-Command",
-        "$version = '${input:releaseVersion}'; if ([string]::IsNullOrWhiteSpace($version)) { throw 'Release version cannot be empty.' }; $tag = if ($version.StartsWith('v')) { $version } else { \"v$version\" }; git show-ref --tags --verify --quiet \"refs/tags/$tag\"; if ($LASTEXITCODE -eq 0) { throw \"Tag $tag already exists locally. Use a new version or delete the existing tag.\" }; git tag -a $tag -m \"Release $tag\"; git push origin main; git push origin $tag"
+        "$version = '${input:releaseVersion}'; if ([string]::IsNullOrWhiteSpace($version)) { throw 'Release version cannot be empty.' }; $tag = if ($version.StartsWith('v')) { $version } else { \"v$version\" }; git show-ref --tags --verify --quiet \"refs/tags/$tag\"; if ($LASTEXITCODE -eq 0) { throw \"Tag $tag already exists locally. Use a new version or delete the existing tag.\" }; git tag -a $tag -m \"Release $tag\"; git push git@github.com:chleved/curseforge-browser.git main; git push git@github.com:chleved/curseforge-browser.git $tag"
       ],
       "group": "build",
       "presentation": {
